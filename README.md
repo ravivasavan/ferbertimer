@@ -6,7 +6,7 @@ A simple React Native (Expo) web app for tracking Ferber method sleep-training c
 
 - **Days 1–7** with the standard graduated check-in schedule
 - **Day 8+** single 30-minute repeating timer
-- Countdown timer with start / pause / resume
+- Countdown timer with start, reset, and skip
 - Audio alert (3 beeps) when each interval completes
 - "Check-in Done" advances to the next longer interval
 - Schedule overview showing your progress through the night
@@ -52,3 +52,16 @@ package.json    — Dependencies and scripts
 | `npm run start` | Start Expo dev server (all platforms) |
 | `npm run android` | Start on Android |
 | `npm run ios` | Start on iOS |
+
+## iOS and TestFlight
+
+The app is set up for Xcode and TestFlight:
+
+- **`app.json`** — `expo.ios.bundleIdentifier` and `buildNumber` are set for App Store / TestFlight.
+- **`eas.json`** — EAS Build and submit profiles; set `submit.production.ios.ascAppId` to your App Store Connect app ID.
+
+**Quick TestFlight (no Xcode):** install EAS CLI, then run `npx testflight` to build and submit in one step.
+
+**Xcode workflow:** run `npx expo prebuild --platform ios`, then open `ios/ferbertimer.xcworkspace` in Xcode to archive and upload.
+
+Full steps (credentials, App Store Connect, versioning): **[docs/xcode-testflight.md](docs/xcode-testflight.md)**.

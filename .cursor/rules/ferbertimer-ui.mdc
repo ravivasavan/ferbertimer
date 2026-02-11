@@ -1,0 +1,14 @@
+---
+description: UI and Figma alignment for Ferber Timer
+globs: App.js, src/theme.js, components/**/*.js
+alwaysApply: false
+---
+
+# Ferber Timer – UI and Figma
+
+When changing UI, layout, or theme:
+
+1. **Design source:** Prefer the design described in `docs/design.md` and, when provided, specs in `docs/figma-specs.md`. The Figma file link and key frames are in `docs/figma.md`.
+2. **Theme:** Use tokens from `src/theme.js` (React Native Paper MD3). Add or adjust colors/spacing there to match `docs/figma-specs.md` when specs are filled.
+3. **Screens:** Main states are idle (Start), running (countdown + Reset/Skip), check-in (“Check-in!” + Next interval), and Start over. Keep layout and hierarchy consistent with `docs/design.md`.
+4. **Assets:** If the user attaches Figma exports (PNG) or pastes specs, align components and styles to those rather than inventing new visuals.
