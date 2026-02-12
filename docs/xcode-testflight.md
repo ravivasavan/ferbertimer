@@ -8,6 +8,8 @@ This guide covers building the Ferber Timer app for iOS and submitting to TestFl
 - **Expo account** — [expo.dev/signup](https://expo.dev/signup)
 - **macOS with Xcode** (only required for the “Prebuild + Xcode” path)
 
+**Upload without Apple ID prompts:** To use an App Store Connect API key (e.g. for CI or to avoid entering credentials each time), see **[App Store Connect API setup](./app-store-connect-api.md)**.
+
 ## Configuration in this repo
 
 - **`app.json`** — `expo.ios.bundleIdentifier` is set to `com.ferbertimer.app` and `buildNumber` to `1`. Change the bundle ID if you use a different team or app name.

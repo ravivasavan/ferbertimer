@@ -4,3 +4,7 @@ dist/
 web-build/
 *.tsbuildinfo
 .DS_Store
+
+# App Store Connect API key (never commit)
+*.p8
+credentials/

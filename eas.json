@@ -10,12 +10,18 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "node": "20.18.0",
+      "distribution": "store"
+    }
   },
   "submit": {
     "production": {
       "ios": {
-        "ascAppId": "YOUR_APP_STORE_CONNECT_APP_ID"
+        "ascAppId": "6759075114",
+    "ascApiKeyPath": "./credentials/AuthKey_3KUYM2H6KD.p8",
+    "ascApiKeyIssuerId": "c90042e9-67da-4d0e-a30a-137699bce57d",
+    "ascApiKeyId": "3KUYM2H6KD"
       }
     }
   }
