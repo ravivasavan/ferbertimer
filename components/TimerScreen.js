@@ -14,18 +14,19 @@ import {
 } from 'react-native-paper';
 import {
   Play,
-  CaretRight,
+  SkipForward,
+  FastForward,
   ArrowCounterClockwise,
   Clock,
   CheckCircle,
 } from 'phosphor-react-native';
 import { FERBER_INTERVALS, BEEP_FREQUENCY_HZ, BEEP_GAIN, BEEP_DURATION, BEEP_DELAYS, VIBRATION_PATTERN } from '../constants/ferber';
-import { FIGMA_FRAME, FIGMA_SPACING, FIGMA_CARD } from '../constants/design';
+import { FIGMA_FRAME, FIGMA_SPACING, FIGMA_CARD, FIGMA_BUTTON } from '../constants/design';
 import { getIntervalMinutes } from '../utils/time';
 import { getTimerState, setTimerState } from '../utils/storage';
 import TimerDisplay from './TimerDisplay';
 
-export default function TimerScreen({ day, onDayChange, onResetProgram }) {
+export default function TimerScreen({ day, onDayChange }) {
   const theme = useTheme();
   
   const [checkIndex, setCheckIndex] = useState(0);
@@ -222,9 +223,9 @@ export default function TimerScreen({ day, onDayChange, onResetProgram }) {
         ]
       : [{ index: 0, label: 'Interval', min: FERBER_INTERVALS.beyond[0] }];
 
-  // Figma: primary CTA = white bg + dark text (dark theme)
-  const primaryBg = theme.colors.primaryButtonBackground ?? theme.colors.surface;
-  const primaryFg = theme.colors.onPrimaryButtonBackground ?? theme.colors.onSurface;
+  // Figma: primary CTA (Start/Resume) = accent yellow-green from timer
+  const primaryBg = theme.colors.accent ?? '#a4e323';
+  const primaryFg = theme.colors.onAccent ?? '#121212';
 
   return (
     <View style={[styles.timerContainer, { backgroundColor: theme.colors.background }]}>
@@ -242,12 +243,12 @@ export default function TimerScreen({ day, onDayChange, onResetProgram }) {
               <Button
                 mode="outlined"
                 onPress={handleCheckinDone}
-                icon={({ size, color }) => <CaretRight size={size} color={color} weight="fill" />}
-                contentStyle={styles.primaryButtonContent}
-                style={[styles.buttonOutlined, { borderColor: theme.colors.outline }]}
-                labelStyle={[styles.buttonLabel, { color: theme.colors.onSurface }]}
-              >
-                Next interval
+icon={({ size, color }) => <SkipForward size={size} color={color} weight="fill" />}
+                  contentStyle={styles.primaryButtonContent}
+                  style={[styles.buttonOutlined, { borderColor: theme.colors.outline }]}
+                  labelStyle={[styles.buttonLabel, { color: theme.colors.onSurface }]}
+                >
+                  Next interval
               </Button>
             ) : isRunning ? (
               <>
@@ -265,7 +266,7 @@ export default function TimerScreen({ day, onDayChange, onResetProgram }) {
                 <Button
                   mode="outlined"
                   onPress={handleCheckinDone}
-                  icon={({ size, color }) => <CaretRight size={size} color={color} weight="fill" />}
+                  icon={({ size, color }) => <FastForward size={size} color={color} weight="fill" />}
                   contentStyle={styles.primaryButtonContent}
                   style={[styles.buttonOutlined, { borderColor: theme.colors.outline }]}
                   labelStyle={[styles.buttonLabel, { color: theme.colors.onSurface }]}
@@ -278,9 +279,11 @@ export default function TimerScreen({ day, onDayChange, onResetProgram }) {
                 <Button
                   mode="contained"
                   onPress={handleStart}
+                  buttonColor={primaryBg}
+                  textColor={primaryFg}
                   icon={({ size, color }) => <Play size={size} color={primaryFg} weight="fill" />}
                   contentStyle={styles.primaryButtonContent}
-                  style={[styles.buttonPrimary, { backgroundColor: primaryBg }]}
+                  style={styles.buttonPrimary}
                   labelStyle={[styles.buttonLabel, { color: primaryFg }]}
                 >
                   Resume
@@ -301,9 +304,11 @@ export default function TimerScreen({ day, onDayChange, onResetProgram }) {
               <Button
                 mode="contained"
                 onPress={handleStart}
+                buttonColor={primaryBg}
+                textColor={primaryFg}
                 icon={({ size, color }) => <Play size={size} color={primaryFg} weight="fill" />}
                 contentStyle={styles.primaryButtonContent}
-                style={[styles.buttonPrimary, { backgroundColor: primaryBg }]}
+                style={styles.buttonPrimary}
                 labelStyle={[styles.buttonLabel, { color: primaryFg }]}
               >
                 Start
@@ -356,16 +361,6 @@ export default function TimerScreen({ day, onDayChange, onResetProgram }) {
               );
             })}
           </View>
-
-          <Button
-            mode="text"
-            onPress={onResetProgram}
-            icon={({ size, color }) => <ArrowCounterClockwise size={size} color={theme.colors.onSurface} weight="fill" />}
-            style={styles.startOverButton}
-            labelStyle={[styles.startOverLabel, { color: theme.colors.onSurface }]}
-          >
-            Start over
-          </Button>
         </View>
       </ScrollView>
     </View>
@@ -405,12 +400,13 @@ const styles = StyleSheet.create({
     paddingRight: PAD_R,
     paddingBottom: PAD_V,
   },
-  // Day · Interval — Figma: Medium 16/24
+  // Day · Interval — Figma: Medium 16/24, uppercase
   metadataText: {
     fontSize: 16,
     lineHeight: 24,
     fontWeight: '500',
     marginBottom: FIGMA_SPACING.metadataToControls,
+    textTransform: 'uppercase',
   },
   controlsContainer: {
     width: '100%',
@@ -420,16 +416,18 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   primaryButtonContent: {
-    height: 56,
+    height: FIGMA_BUTTON.height,
   },
   buttonPrimary: {
-    borderRadius: 8,
+    borderRadius: FIGMA_BUTTON.borderRadius,
     flex: 1,
+    minHeight: FIGMA_BUTTON.height,
   },
   buttonOutlined: {
-    borderRadius: 8,
+    borderRadius: FIGMA_BUTTON.borderRadius,
     flex: 1,
     backgroundColor: 'transparent',
+    minHeight: FIGMA_BUTTON.height,
   },
   // Figma: Button label Medium 18/26
   buttonLabel: {
@@ -478,17 +476,5 @@ const styles = StyleSheet.create({
     fontSize: 22,
     lineHeight: 28,
     fontWeight: 'bold',
-  },
-  startOverButton: {
-    alignSelf: 'stretch',
-    marginTop: FIGMA_SPACING.startOverMarginTop,
-    marginHorizontal: FIGMA_SPACING.startOverMarginHorizontal,
-    marginBottom: FIGMA_SPACING.startOverMarginBottom,
-  },
-  // Figma: Start over Medium 16/24
-  startOverLabel: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '500',
   },
 });

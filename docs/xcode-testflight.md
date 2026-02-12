@@ -130,4 +130,6 @@ After changing `app.json`, run `npx expo prebuild --platform ios --clean` again 
 - **“App not found” on submit** — Create the app in App Store Connect with the same bundle ID and set `ascAppId` in `eas.json`.
 - **Build fails on EAS** — Check [expo.dev/build](https://expo.dev/build) for the build log; often it’s a dependency or Node/Expo version issue. Ensure `package.json` and `app.json` are valid.
 
+- **App icon doesn't appear on device** — EAS can cache native assets. After changing `assets/icon.png` (or other app icons), either run the build with cache cleared: `eas build --platform ios --profile production --clear-cache` (add `--auto-submit` if you use it), or bump the cache key in `eas.json` under `build.production.cache.key` (e.g. to `assets-v3`). Then delete the app from the device and install the new build; iOS sometimes caches the old icon. Icons should be 1024×1024 PNG.
+
 For more detail: [Expo – Submit to the Apple App Store](https://docs.expo.dev/submit/ios/) and [EAS Build](https://docs.expo.dev/build/introduction).

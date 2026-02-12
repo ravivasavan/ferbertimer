@@ -54,7 +54,6 @@ From Figma Inspect → Layer properties:
 | Button label | System | Medium | 18 | 26 | Start, Reset, Skip, Next interval |
 | Card label | System | Normal / Bold when active | 16 | 24 | 1st check, 2nd check, etc. |
 | Card duration | System | Bold | 22 | 28 | 3 min, 5 min, etc. |
-| Start over | System | Medium | 16 | 24 | Bottom link |
 
 ---
 
@@ -72,7 +71,6 @@ From Figma Inspect → Layer properties:
 | Button padding (horizontal) | 24 | Large primary/outline |
 | Card padding | 16 | Inside each interval card |
 | Gap between primary buttons | 12 | Reset + Skip, Start + Reset |
-| Start over margins | 16, 0, 24 | Full width footprint; top 16, bottom 24 |
 
 ---
 

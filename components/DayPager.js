@@ -4,7 +4,7 @@ import TimerScreen from './TimerScreen';
 
 const { width } = Dimensions.get('window');
 
-export default function DayPager({ currentDay, onDayChange, onResetProgram }) {
+export default function DayPager({ currentDay, onDayChange }) {
   const flatListRef = useRef(null);
   const [widthState, setWidthState] = useState(width);
 
@@ -39,7 +39,6 @@ export default function DayPager({ currentDay, onDayChange, onResetProgram }) {
         <TimerScreen 
           day={item} 
           onDayChange={null} // Hide internal selector
-          onResetProgram={onResetProgram}
         />
       </View>
     );

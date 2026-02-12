@@ -12,7 +12,10 @@
     },
     "production": {
       "node": "20.18.0",
-      "distribution": "store"
+      "distribution": "store",
+      "cache": {
+        "key": "assets-v3"
+      }
     }
   },
   "submit": {

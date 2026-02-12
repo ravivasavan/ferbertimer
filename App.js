@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import DayPager from './components/DayPager';
-import { getProgramStartDate, setProgramStartDate, resetProgram } from './utils/storage';
+import { getProgramStartDate, setProgramStartDate } from './utils/storage';
 import { getCurrentDay, getTodayString } from './utils/time';
 import { LightTheme, DarkTheme } from './src/theme';
 
@@ -96,12 +96,6 @@ export default function App() {
       });
   }, []);
 
-  const handleResetProgram = () => {
-    resetProgram().then(() => {
-      setCurrentDay(1);
-    });
-  };
-
   const handleDayChange = (selectedDay) => {
     setCurrentDay(selectedDay);
   };
@@ -130,7 +124,6 @@ export default function App() {
               <DayPager
                 currentDay={currentDay}
                 onDayChange={handleDayChange}
-                onResetProgram={handleResetProgram}
               />
             </View>
           </ErrorBoundary>

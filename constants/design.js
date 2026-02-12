@@ -37,7 +37,4 @@ export const FIGMA_SPACING = {
   timerToMetadata: 24,
   metadataToControls: 24,
   controlsToGrid: 12,
-  startOverMarginTop: 16,
-  startOverMarginHorizontal: 0, // Full width footprint (Figma)
-  startOverMarginBottom: 24,
 };

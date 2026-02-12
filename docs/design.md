@@ -14,8 +14,6 @@ High-level design direction for the Ferber Timer app. Keep this aligned with `do
 1. **Idle** – Large circular timer (e.g. 3:00), “Day N · Interval N”, primary Start button, 2×2 grid of interval cards (1st / 2nd / 3rd check, Then).
 2. **Running** – Same layout; timer counts down with progress ring; Reset and Skip buttons; one interval card highlighted (current/completed).
 3. **Check-in** – “Check-in!” in the circle; “Next interval” as primary action; 1st check marked done (checkmark), others pending (clock icon).
-4. **Start over** – Text link + icon at bottom; available in all states.
-
 ## Components to keep consistent
 
 - **Timer circle** – Size, stroke width, colors for ring (active vs inactive), inner background.
