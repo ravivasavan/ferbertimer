@@ -36,9 +36,10 @@ export default function DayPager({ currentDay, onDayChange }) {
   const renderItem = ({ item }) => {
     return (
       <View style={{ width: widthState, flex: 1 }}>
-        <TimerScreen 
-          day={item} 
-          onDayChange={null} // Hide internal selector
+        <TimerScreen
+          day={item}
+          currentDay={currentDay}
+          onDayChange={onDayChange}
         />
       </View>
     );

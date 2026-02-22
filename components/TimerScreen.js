@@ -25,8 +25,10 @@ import { FIGMA_FRAME, FIGMA_SPACING, FIGMA_CARD, FIGMA_BUTTON } from '../constan
 import { getIntervalMinutes } from '../utils/time';
 import { getTimerState, setTimerState } from '../utils/storage';
 import TimerDisplay from './TimerDisplay';
+import DayCarousel from './DayCarousel';
 
-export default function TimerScreen({ day, onDayChange }) {
+export default function TimerScreen({ day, currentDay: currentDayProp, onDayChange }) {
+  const currentDay = currentDayProp ?? day;
   const theme = useTheme();
   
   const [checkIndex, setCheckIndex] = useState(0);
@@ -223,14 +225,20 @@ export default function TimerScreen({ day, onDayChange }) {
         ]
       : [{ index: 0, label: 'Interval', min: FERBER_INTERVALS.beyond[0] }];
 
-  // Figma: primary CTA (Start/Resume) = accent yellow-green from timer
-  const primaryBg = theme.colors.accent ?? '#a4e323';
-  const primaryFg = theme.colors.onAccent ?? '#121212';
+  // Figma Landing: Start button = white bg, dark text (primary CTA)
+  const startButtonBg = theme.colors.primaryButtonBackground ?? '#FFFFFF';
+  const startButtonFg = theme.colors.onPrimaryButtonBackground ?? '#121212';
+  // Resume / accent when paused mid-interval
+  const accentBg = theme.colors.accent ?? '#a4e323';
+  const accentFg = theme.colors.onAccent ?? '#121212';
 
   return (
     <View style={[styles.timerContainer, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollBody}>
         <View style={styles.timerBody}>
+          {onDayChange != null && (
+            <DayCarousel currentDay={currentDay} onDayChange={onDayChange} />
+          )}
           <TimerDisplay
             secondsLeft={secondsLeft}
             totalSeconds={totalSeconds}
@@ -279,12 +287,12 @@ icon={({ size, color }) => <SkipForward size={size} color={color} weight="fill" 
                 <Button
                   mode="contained"
                   onPress={handleStart}
-                  buttonColor={primaryBg}
-                  textColor={primaryFg}
-                  icon={({ size, color }) => <Play size={size} color={primaryFg} weight="fill" />}
+                  buttonColor={accentBg}
+                  textColor={accentFg}
+                  icon={({ size, color }) => <Play size={size} color={accentFg} weight="fill" />}
                   contentStyle={styles.primaryButtonContent}
                   style={styles.buttonPrimary}
-                  labelStyle={[styles.buttonLabel, { color: primaryFg }]}
+                  labelStyle={[styles.buttonLabel, { color: accentFg }]}
                 >
                   Resume
                 </Button>
@@ -304,12 +312,12 @@ icon={({ size, color }) => <SkipForward size={size} color={color} weight="fill" 
               <Button
                 mode="contained"
                 onPress={handleStart}
-                buttonColor={primaryBg}
-                textColor={primaryFg}
-                icon={({ size, color }) => <Play size={size} color={primaryFg} weight="fill" />}
+                buttonColor={startButtonBg}
+                textColor={startButtonFg}
+                icon={({ size, color }) => <Play size={size} color={startButtonFg} weight="fill" />}
                 contentStyle={styles.primaryButtonContent}
                 style={styles.buttonPrimary}
-                labelStyle={[styles.buttonLabel, { color: primaryFg }]}
+                labelStyle={[styles.buttonLabel, { color: startButtonFg }]}
               >
                 Start
               </Button>
@@ -324,7 +332,9 @@ icon={({ size, color }) => <SkipForward size={size} color={color} weight="fill" 
               const isDone = row.index < checkIndex;
               const accent = theme.colors.accent;
               const showCheck = isCurrent || isDone;
-              // Figma: default bg #1E1E1E/#2C2C2C border #333333; active bg #2C2C2C border #a4e323
+              // Figma Interval Complete: completed card uses opacity 40%
+              const opacity = isDone ? 0.4 : 1;
+              // Figma: default bg #1E1E1E/#2C2C2C border #333333; active bg rgba(accent,0.1) border accent
               return (
                 <TouchableRipple
                   key={row.index}
@@ -335,7 +345,7 @@ icon={({ size, color }) => <SkipForward size={size} color={color} weight="fill" 
                       backgroundColor: isCurrent ? theme.colors.surfaceVariant : theme.colors.surface,
                       borderColor: isCurrent ? accent : theme.colors.outlineVariant,
                       borderWidth: 1,
-                      opacity: isDone ? 0.6 : 1,
+                      opacity,
                     }
                   ]}
                   accessibilityRole="button"
