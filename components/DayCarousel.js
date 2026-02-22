@@ -73,12 +73,13 @@ export default function DayCarousel({ currentDay, onDayChange }) {
 const styles = StyleSheet.create({
   scroll: {
     flexGrow: 0,
-    marginBottom: 20,
+    marginBottom: 0,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingBottom: 0,
+    paddingHorizontal: 24,
   },
   pill: {
     paddingVertical: 12,

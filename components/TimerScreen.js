@@ -24,6 +24,11 @@ import { FERBER_INTERVALS, BEEP_FREQUENCY_HZ, BEEP_GAIN, BEEP_DURATION, BEEP_DEL
 import { FIGMA_FRAME, FIGMA_SPACING, FIGMA_CARD, FIGMA_BUTTON } from '../constants/design';
 import { getIntervalMinutes } from '../utils/time';
 import { getTimerState, setTimerState } from '../utils/storage';
+import {
+  requestPermissions,
+  scheduleCheckInNotification,
+  cancelCheckInNotification,
+} from '../utils/notifications';
 import TimerDisplay from './TimerDisplay';
 import DayCarousel from './DayCarousel';
 
@@ -80,7 +85,8 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
 
   useEffect(() => {
     let cancelled = false;
-    getTimerState(day).then((saved) => {
+    if (Platform.OS !== 'web') cancelCheckInNotification();
+    getTimerState(day).then(async (saved) => {
       if (cancelled) return;
       if (saved) {
         const now = Date.now();
@@ -95,7 +101,15 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
         setSecondsLeft(secs);
         setIsRunning(running);
         setIsComplete(!running && secs === 0 && (saved.endTimestamp != null || saved.secondsLeft === 0));
-        if (running) endTimestampRef.current = saved.endTimestamp;
+        if (running) {
+          endTimestampRef.current = saved.endTimestamp;
+          if (Platform.OS !== 'web' && saved.endTimestamp > now) {
+            const granted = await requestPermissions();
+            if (granted) scheduleCheckInNotification(saved.endTimestamp);
+          }
+        } else {
+          endTimestampRef.current = null;
+        }
       } else {
         const initialMinutes = getIntervalMinutes(day, 0);
         setCheckIndex(0);
@@ -134,6 +148,7 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
       if (remaining <= 0) {
         if (intervalRef.current) clearInterval(intervalRef.current);
         intervalRef.current = null;
+        if (Platform.OS !== 'web') cancelCheckInNotification();
         setIsRunning(false);
         setIsComplete(true);
         playAlert();
@@ -168,14 +183,20 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
     };
   }, []);
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (isComplete) return;
-    endTimestampRef.current = Date.now() + secondsLeft * 1000;
+    const endTs = Date.now() + secondsLeft * 1000;
+    endTimestampRef.current = endTs;
     setIsRunning(true);
+    if (Platform.OS !== 'web') {
+      const granted = await requestPermissions();
+      if (granted) scheduleCheckInNotification(endTs);
+    }
     showSnackbar('Timer started');
   };
 
   const handleCheckinDone = () => {
+    if (Platform.OS !== 'web') cancelCheckInNotification();
     const nextIndex = checkIndex + 1;
     setCheckIndex(nextIndex);
     const nextMinutes = getIntervalMinutes(day, nextIndex);
@@ -187,6 +208,7 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
   };
 
   const handleReset = () => {
+    if (Platform.OS !== 'web') cancelCheckInNotification();
     setSecondsLeft(totalSeconds);
     setIsRunning(false);
     setIsComplete(false);
@@ -195,6 +217,7 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
   };
 
   const handleSelectInterval = (index) => {
+    if (Platform.OS !== 'web') cancelCheckInNotification();
     setCheckIndex(index);
     const minutes = getIntervalMinutes(day, index);
     setSecondsLeft(minutes * 60);
@@ -210,10 +233,6 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
       </View>
     );
   }
-
-  const dayLabel = day <= 7 ? `Day ${day}` : 'Day 8+';
-  const intervalNumber = day > 7 ? 1 : checkIndex + 1;
-  const metadataText = `${dayLabel} · Interval ${intervalNumber}`;
 
   const intervalRows =
     day <= 7
@@ -235,16 +254,17 @@ export default function TimerScreen({ day, currentDay: currentDayProp, onDayChan
   return (
     <View style={[styles.timerContainer, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollBody}>
-        <View style={styles.timerBody}>
-          {onDayChange != null && (
+        {onDayChange != null && (
+          <View style={styles.dayNavFullWidth}>
             <DayCarousel currentDay={currentDay} onDayChange={onDayChange} />
-          )}
+          </View>
+        )}
+        <View style={styles.timerBody}>
           <TimerDisplay
             secondsLeft={secondsLeft}
             totalSeconds={totalSeconds}
             isComplete={isComplete}
           />
-          <Text style={[styles.metadataText, { color: theme.colors.accent ?? '#a4e323' }]}>{metadataText}</Text>
 
           <View style={styles.controlsContainer}>
             {isComplete ? (
@@ -394,15 +414,21 @@ function playBeeps(ctx) {
 const PAD_L = FIGMA_FRAME.paddingLeft;
 const PAD_R = FIGMA_FRAME.paddingRight;
 const PAD_V = FIGMA_FRAME.paddingVertical;
+const TOP_INSET = PAD_V + (FIGMA_FRAME.topInsetNotch ?? 0);
+const DESIGN_TOP_OFFSET = 36;
 
 const styles = StyleSheet.create({
   timerContainer: {
     flex: 1,
-    paddingTop: PAD_V,
+    paddingTop: TOP_INSET + DESIGN_TOP_OFFSET,
   },
   scrollBody: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+  },
+  dayNavFullWidth: {
+    width: '100%',
+    alignSelf: 'stretch',
   },
   timerBody: {
     alignItems: 'center',
@@ -410,18 +436,10 @@ const styles = StyleSheet.create({
     paddingRight: PAD_R,
     paddingBottom: PAD_V,
   },
-  // Day · Interval — Figma: Medium 16/24, uppercase
-  metadataText: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '500',
-    marginBottom: FIGMA_SPACING.metadataToControls,
-    textTransform: 'uppercase',
-  },
   controlsContainer: {
     width: '100%',
     flexDirection: 'row',
-    marginTop: FIGMA_SPACING.metadataToControls,
+    marginTop: 0,
     marginBottom: FIGMA_SPACING.controlsToGrid,
     alignItems: 'stretch',
   },

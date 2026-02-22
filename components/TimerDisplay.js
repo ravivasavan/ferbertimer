@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: FIGMA_SPACING.timerTopMargin,
-    marginBottom: FIGMA_SPACING.timerToMetadata,
+    marginBottom: FIGMA_SPACING.timerToControls,
     paddingVertical: 10,
   },
   svgContainer: {

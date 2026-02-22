@@ -9,6 +9,8 @@ export const FIGMA_FRAME = {
   paddingBottom: 24,
   paddingLeft: 24,
   paddingVertical: 24,
+  // Extra top inset to clear physical notch / dynamic island (in addition to safe area)
+  topInsetNotch: 20,
 };
 
 export const FIGMA_TIMER = {
@@ -31,10 +33,10 @@ export const FIGMA_CARD = {
   gapBetweenButtons: 12,
 };
 
-// Spacing: timer top (clear dynamic island), timer ↔ metadata 24, metadata ↔ controls 24, controls ↔ grid 12
+// Spacing: 36px between day nav ↔ timer ↔ controls; 12px between controls ↔ grid
 export const FIGMA_SPACING = {
-  timerTopMargin: 56,
-  timerToMetadata: 24,
-  metadataToControls: 24,
+  sectionGap: 36,
+  timerTopMargin: 36,
+  timerToControls: 36,
   controlsToGrid: 12,
 };

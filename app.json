@@ -12,28 +12,24 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      ["expo-notifications", { "defaultChannel": "ferber-check-in" }]
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ferbertimer.app",
       "buildNumber": "3",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "infoPlist": { "ITSAppUsesNonExemptEncryption": false }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": ["android.permission.SCHEDULE_EXACT_ALARM"]
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "a15b300d-52c3-4dff-9a09-98b16f933458"
-      }
-    }
+    "web": { "favicon": "./assets/favicon.png" },
+    "extra": { "eas": { "projectId": "a15b300d-52c3-4dff-9a09-98b16f933458" } }
   }
 }
