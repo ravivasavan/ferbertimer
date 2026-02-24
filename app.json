@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "ferbertimer",
+    "name": "Ferber Timer",
     "slug": "ferbertimer",
     "version": "1.0.2",
     "orientation": "portrait",
@@ -20,7 +20,8 @@
       "bundleIdentifier": "com.ferbertimer.app",
       "buildNumber": "4",
       "entitlements": {
-        "aps-environment": "production"
+        "aps-environment": "production",
+        "com.apple.developer.usernotifications.time-sensitive": true
       },
       "infoPlist": { "ITSAppUsesNonExemptEncryption": false }
     },

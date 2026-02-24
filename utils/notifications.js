@@ -55,7 +55,11 @@ export async function scheduleCheckInNotification(endTimestamp) {
         title: "Time to check in!",
         body: "Ferber timer interval complete.",
         sound: true,
-        ...(Platform.OS === 'android' && { priority: 'max' }),
+        ...(Platform.OS === 'ios' && { interruptionLevel: 'timeSensitive' }),
+        ...(Platform.OS === 'android' && {
+          priority: 'max',
+          vibrationPattern: VIBRATION_PATTERN,
+        }),
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DATE,
